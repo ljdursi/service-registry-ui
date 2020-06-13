@@ -1,0 +1,21 @@
+.title{
+    font-size: 18pt;
+    color: blueviolet;
+}
+
+.serviceTable{
+    width: 90%;
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin: auto;
+}
+
+.user, .title, .body {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.user, .body {
+    font-size: 16pt;
+    color: black;
+}
