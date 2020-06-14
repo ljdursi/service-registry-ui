@@ -65,7 +65,7 @@ class GetServicesTable extends Component {
                             <tr key={service.id} align="start">
                                 <td className="body"><a href={service.organization.url}>{service.organization.name}</a></td>
                                 <td className="user">{service.name}</td>
-                                <td className="user">{service.type.group} {service.type.version}</td>
+                                <td className="user">{service.type.group}.{service.type.artifact} {service.type.version}</td>
                                 <td className="title"><a href={service.url}>link</a></td>
                             </tr>
                             ))
