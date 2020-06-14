@@ -54,12 +54,15 @@ class GetServicesTable extends Component {
                     </form>
 
                     <table className="serviceTable">
+                        <thead>
                         <tr>
                             <th>Organization</th>
                             <th>Name</th>
                             <th>Type</th>
                             <th>Url</th>
                         </tr>
+                        </thead>
+                        <tbody>
                     {
                         filteredServices.map(service => (
                             <tr key={service.id} align="start">
@@ -70,6 +73,7 @@ class GetServicesTable extends Component {
                             </tr>
                             ))
                     }
+                    </tbody>
                     </table>
                 </div>
             );
