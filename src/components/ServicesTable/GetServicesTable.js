@@ -87,6 +87,27 @@ class GetServicesTable extends Component {
         return servicerow;
     }
 
+    serviceCohortsMatch(service, target) {
+        if (!service)
+            return false;
+
+        if (target == "")
+            return true;
+
+        if (!("cohorts" in service))
+            return false;
+
+        const cohortnames = service.cohorts.map(cohort => cohort.cohortName);
+        if (cohortnames.some(name => (name.includes(target))))
+            return true;
+
+        const subcategory_values = service.cohorts.flatMap(cohort => (cohort.categories.flatMap(category => category.subcategories.flatMap(subcat => subcat.value))));
+        if (subcategory_values.some(value => (value.includes(target))))
+            return true;
+
+        return false;
+    }
+
     render() {
         const {error, isLoaded, filterValue, services } = this.state;
 
@@ -96,12 +117,13 @@ class GetServicesTable extends Component {
             return <div>Loading ...</div>
         }else{
 
-            const filteredServices = services.filter(service => service.organization.name.includes(filterValue));
+            /* const filteredServices = services.filter(service => service.organization.name.includes(filterValue)); */
+            const filteredServices = services.filter(service => this.serviceCohortsMatch(service, filterValue));
 
             return(
                 <div>
                     <form onSubmit={this.handleSubmit}>
-                        <label>Fiter Organization By
+                        <label>Fiter Cohorts By
                             <input type="text" value={this.state.filterValue} onChange={e => this.setState({filterValue: e.target.value})} />
                         </label>
                     </form>
