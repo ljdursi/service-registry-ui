@@ -34,6 +34,59 @@ class GetServicesTable extends Component {
         )
     }
 
+    cohortItems(cohort, categoryName) {
+        const category = cohort.categories.filter(cat => (cat.name === categoryName));
+        const valid_subcategories = category[0].subcategories.filter(subcat => ("ontologyLabel" in subcat && "value" in subcat));
+        return valid_subcategories.map(subcat => (<li><b>{subcat.ontologyLabel}:</b> {subcat.value}</li>));
+    }
+
+    cohortEntry(cohort) {
+        const result =
+            <div className="cohort">
+            <b>{cohort.cohortName}:</b><br></br>
+            <div className="cohortmetadata">
+            <p>Basic Attributes</p>
+            <ul>
+            {this.cohortItems(cohort, "basic cohort attributes")}
+            </ul>
+            Genomic Data
+            <ul>
+            {this.cohortItems(cohort, "laboratory measures (Laboratory Procedure NCIT:C25294)")}
+            </ul>
+            </div>
+            </div>;
+        return result;
+    }
+
+    serviceEntry(service) {
+        var servicerow = [<tr key={service.id} align="start" className="service">
+                             <td className="body"><a href={service.organization.url}>{service.organization.name}</a></td>
+                             <td className="user">{service.name}</td>
+                             <td className="user">{service.type.group}.{service.type.artifact} {service.type.version}</td>
+                             <td className="title"><a href={service.url}>link</a></td>
+                         </tr>];
+        if ("cohorts" in service ) {
+            const cohorts = [ 
+                <tr className="cohorts" align="start">
+                    <td colSpan="4">
+                        { service.cohorts.map(cohort => this.cohortEntry(cohort)) }
+                    </td>
+                </tr> ];
+            servicerow = servicerow.concat(cohorts);
+        } else {
+            const cohorts = [
+                <tr className="cohorts" align="start">
+                <td colSpan="4">
+                <div classname="cohort">
+                <p>No cohort data provided</p>
+                </div>
+                </td>
+            </tr>];
+            servicerow = servicerow.concat(cohorts);
+        }
+        return servicerow;
+    }
+
     render() {
         const {error, isLoaded, filterValue, services } = this.state;
 
@@ -63,17 +116,8 @@ class GetServicesTable extends Component {
                         </tr>
                         </thead>
                         <tbody>
-                    {
-                        filteredServices.map(service => (
-                            <tr key={service.id} align="start">
-                                <td className="body"><a href={service.organization.url}>{service.organization.name}</a></td>
-                                <td className="user">{service.name}</td>
-                                <td className="user">{service.type.group}.{service.type.artifact} {service.type.version}</td>
-                                <td className="title"><a href={service.url}>link</a></td>
-                            </tr>
-                            ))
-                    }
-                    </tbody>
+                        { filteredServices.map(service => this.serviceEntry(service)) }
+                        </tbody>
                     </table>
                 </div>
             );
